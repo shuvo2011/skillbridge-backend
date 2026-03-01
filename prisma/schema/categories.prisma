@@ -1,0 +1,14 @@
+// categories.prisma (Categories Schema)
+
+model Categories {
+  id        String           @id @default(uuid())
+  name      String           @db.VarChar(255)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  status    CategoriesStatus @default(PUBLISHED)
+}
+
+enum CategoriesStatus {
+  DRAFT
+  PUBLISHED
+}
