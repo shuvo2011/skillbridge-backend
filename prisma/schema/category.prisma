@@ -1,0 +1,16 @@
+// categories.prisma (Categories Schema)
+
+model Category {
+  id        String         @id @default(uuid())
+  name      String         @unique @db.VarChar(255)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  status    CategoryStatus @default(PUBLISHED)
+
+  @@map("categories")
+}
+
+enum CategoryStatus {
+  DRAFT
+  PUBLISHED
+}
