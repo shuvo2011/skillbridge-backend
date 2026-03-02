@@ -24,8 +24,4 @@ const createCategory = async (req: Request, res: Response) => {
 
 export const categoryController = {
 	createCategory,
-	// getCategoryById,
-	// getCategories,
-	// updateCategory,
-	// deleteCategory,
 };
