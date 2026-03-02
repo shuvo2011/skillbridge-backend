@@ -1,6 +1,12 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -8,16 +14,18 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          String    @default("STUDENT")
-  sessions      Session[]
-  accounts      Account[]
+  id             String          @id
+  name           String
+  email          String
+  emailVerified  Boolean         @default(false)
+  image          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  role           String          @default("STUDENT")
+  sessions       Session[]
+  accounts       Account[]
+  studentProfile StudentProfile?
+  tutorProfile   TutorProfile?
 
   @@unique([email])
   @@map("user")
@@ -69,4 +77,146 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Category {
+  id              String          @id @default(uuid())
+  name            String          @unique @db.VarChar(255)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  status          CategoryStatus  @default(PUBLISHED)
+  tutorCategories TutorCategory[]
+
+  @@map("categories")
+}
+
+model StudentProfile {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  bio            String?  @db.Text
+  phone          String?  @db.VarChar(15)
+  address        String?  @db.Text
+  profilePicture String?  @db.VarChar(255)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  bookings Booking[]
+  reviews  Review[]
+
+  @@map("student_profiles")
+}
+
+model TutorProfile {
+  id              String      @id @default(uuid())
+  userId          String      @unique
+  bio             String?     @db.Text
+  qualification   String?     @db.VarChar(255)
+  experienceYears Int?
+  phone           String?     @db.VarChar(15)
+  address         String?     @db.Text
+  profilePicture  String?     @db.VarChar(255)
+  status          TutorStatus @default(PENDING)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user            User                @relation(fields: [userId], references: [id])
+  availability    TutorAvailability[]
+  tutorCategories TutorCategory[]
+  bookings        Booking[]
+  reviews         Review[]
+
+  @@map("tutor_profiles")
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+  studentId   String
+  tutorId     String
+  sessionDate DateTime
+  status      BookingStatus @default(PENDING)
+  categoryId  String[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  student StudentProfile @relation(fields: [studentId], references: [id])
+  tutor   TutorProfile   @relation(fields: [tutorId], references: [id])
+
+  @@map("bookings")
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  studentId  String
+  tutorId    String
+  rating     Int
+  reviewText String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  student StudentProfile @relation(fields: [studentId], references: [id])
+  tutor   TutorProfile   @relation(fields: [tutorId], references: [id])
+
+  @@map("reviews")
+}
+
+model TutorAvailability {
+  id            String    @id @default(uuid())
+  tutorId       String
+  availableFrom DateTime  @db.Time()
+  availableTo   DateTime  @db.Time()
+  dayOfWeek     DayOfWeek
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  tutor TutorProfile @relation(fields: [tutorId], references: [id])
+
+  @@map("tutor_availability")
+}
+
+model TutorCategory {
+  id         String   @id @default(uuid())
+  tutorId    String
+  categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tutor    TutorProfile @relation(fields: [tutorId], references: [id])
+  category Category     @relation(fields: [categoryId], references: [id])
+
+  @@map("tutor_categories")
+}
+
+// Enums
+enum Role {
+  STUDENT
+  TUTOR
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum TutorStatus {
+  PENDING
+  ACTIVE
+  DEACTIVATE
+}
+
+enum CategoryStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
