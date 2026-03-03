@@ -14,18 +14,18 @@ datasource db {
 }
 
 model User {
-  id             String          @id
+  id             String         @id
   name           String
   email          String
-  emailVerified  Boolean         @default(false)
+  emailVerified  Boolean        @default(false)
   image          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  role           String          @default("STUDENT")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  role           String         @default("STUDENT")
   sessions       Session[]
   accounts       Account[]
-  studentProfile StudentProfile?
-  tutorProfile   TutorProfile?
+  studentProfile Student?
+  tutorProfile   TutorProfiles?
 
   banned     Boolean?  @default(false)
   banReason  String?   @default("Violated terms of service")
@@ -94,7 +94,7 @@ model Category {
   @@map("categories")
 }
 
-model StudentProfile {
+model Student {
   id             String   @id @default(uuid())
   userId         String   @unique
   bio            String?  @db.Text
@@ -108,10 +108,10 @@ model StudentProfile {
   bookings Booking[]
   reviews  Review[]
 
-  @@map("student_profiles")
+  @@map("students")
 }
 
-model TutorProfile {
+model TutorProfiles {
   id              String      @id @default(uuid())
   userId          String      @unique
   bio             String?     @db.Text
@@ -143,8 +143,8 @@ model Booking {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  student StudentProfile @relation(fields: [studentId], references: [id])
-  tutor   TutorProfile   @relation(fields: [tutorId], references: [id])
+  student Student       @relation(fields: [studentId], references: [id])
+  tutor   TutorProfiles @relation(fields: [tutorId], references: [id])
 
   @@map("bookings")
 }
@@ -158,8 +158,8 @@ model Review {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  student StudentProfile @relation(fields: [studentId], references: [id])
-  tutor   TutorProfile   @relation(fields: [tutorId], references: [id])
+  student Student       @relation(fields: [studentId], references: [id])
+  tutor   TutorProfiles @relation(fields: [tutorId], references: [id])
 
   @@map("reviews")
 }
@@ -173,7 +173,7 @@ model TutorAvailability {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  tutor TutorProfile @relation(fields: [tutorId], references: [id])
+  tutor TutorProfiles @relation(fields: [tutorId], references: [id])
 
   @@map("tutor_availability")
 }
@@ -185,8 +185,8 @@ model TutorCategory {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  tutor    TutorProfile @relation(fields: [tutorId], references: [id])
-  category Category     @relation(fields: [categoryId], references: [id])
+  tutor    TutorProfiles @relation(fields: [tutorId], references: [id])
+  category Category      @relation(fields: [categoryId], references: [id])
 
   @@map("tutor_categories")
 }

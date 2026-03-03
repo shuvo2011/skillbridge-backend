@@ -26,7 +26,7 @@ export const auth = betterAuth({
 				type: "string",
 				defaultValue: "STUDENT",
 				required: true,
-				input: false,
+				input: true,
 			},
 			banned: {
 				type: "boolean",
@@ -36,7 +36,7 @@ export const auth = betterAuth({
 			},
 			banReason: {
 				type: "string",
-				defaultValue: "Violated terms of service",
+				defaultValue: null,
 				required: false,
 				input: false,
 			},
@@ -59,24 +59,24 @@ export const auth = betterAuth({
 		sendVerificationEmail: async ({ user, url, token }, request) => {
 			try {
 				const info = await transporter.sendMail({
-					from: '"Prisma Blog" <prismablog@ph.com>',
+					from: '"Skill Bridge" <skillbridge@ph.com>',
 					to: user.email,
-					subject: "Verify your email address – Prisma Blog",
+					subject: "Verify your email address – Skill Bridge",
 					text: `
 Hello ${user.name || "there"},
 
-Welcome to Prisma Blog!
+Welcome to Skill Bridge!
 
 Please verify your email address by clicking the link below:
 ${url}
 
 If you did not create this account, you can safely ignore this email.
 
-– Prisma Blog Team
+– Skill Bridge Team
           `,
 					html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-              <h2>Welcome to Prisma Blog 👋</h2>
+              <h2>Welcome to Skill Bridge 👋</h2>
               <p>Hi ${user.name || "there"},</p>
               <p>Thanks for creating an account. Please verify your email address by clicking the button below:</p>
               <p style="margin: 20px 0;">
@@ -85,7 +85,7 @@ If you did not create this account, you can safely ignore this email.
                 </a>
               </p>
               <p>If you didn't create an account with Prisma Blog, you can safely ignore this email.</p>
-              <p style="margin-top: 30px;">Regards,<br /><strong>Prisma Blog Team</strong></p>
+              <p style="margin-top: 30px;">Regards,<br /><strong>Skill Bridge Team</strong></p>
             </div>
           `,
 				});
@@ -107,21 +107,37 @@ If you did not create this account, you can safely ignore this email.
 	databaseHooks: {
 		user: {
 			create: {
+				before: async (payload) => {
+					const data = (payload as any).data ?? payload;
+
+					// ✅ seed admin bypass
+					if (data.__seedAdmin === true) {
+						delete data.__seedAdmin;
+						data.role = "ADMIN";
+						return { data };
+					}
+
+					const rawRole = data.role as string;
+					data.role = rawRole === "TUTOR" ? "TUTOR" : "STUDENT";
+					return { data };
+				},
 				after: async (user) => {
-					const role = (user as any).role;
+					const role = (user as any).role as string;
+
+					// ✅ ADMIN হলে কোনো profile create হবে না
+					if (role === "ADMIN") return;
 
 					if (role === "STUDENT") {
-						await prisma.studentProfile.create({
-							data: {
-								userId: user.id,
-							},
+						await prisma.student.upsert({
+							where: { userId: user.id },
+							update: {},
+							create: { userId: user.id },
 						});
 					} else if (role === "TUTOR") {
-						await prisma.tutorProfile.create({
-							data: {
-								userId: user.id,
-								status: "ACTIVE",
-							},
+						await prisma.tutorProfiles.upsert({
+							where: { userId: user.id },
+							update: {},
+							create: { userId: user.id, status: "ACTIVE" },
 						});
 					}
 				},
