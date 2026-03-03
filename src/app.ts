@@ -4,6 +4,7 @@ import { auth } from "./lib/auth";
 import cors from "cors";
 import { categoryRouter } from "./modules/category/category.router";
 import { studentRouter } from "./modules/student/student.router";
+import { userRouter } from "./modules/user/user.router";
 
 const app: Application = express();
 
@@ -19,6 +20,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 app.use("/api/categories", categoryRouter);
 app.use("/api/students", studentRouter);
+app.use("/api/users", userRouter);
 
 app.get("/", (req, res) => {
 	res.send("Hii, This is arif");
