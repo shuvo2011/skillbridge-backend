@@ -168,8 +168,8 @@ model Review {
 model TutorAvailability {
   id            String    @id @default(uuid())
   tutorId       String
-  availableFrom DateTime  @db.Time
-  availableTo   DateTime  @db.Time
+  availableFrom String
+  availableTo   String
   dayOfWeek     DayOfWeek
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

@@ -6,6 +6,7 @@ import { categoryRouter } from "./modules/category/category.router";
 import { studentRouter } from "./modules/student/student.router";
 import { userRouter } from "./modules/user/user.router";
 import { tutorProfileRouter } from "./modules/tutorProfile/tutorProfile.router";
+import { tutorAvailabilityRouter } from "./modules/tutorAvailability/tutorAvailability.router";
 
 const app: Application = express();
 
@@ -23,6 +24,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/students", studentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/tutors", tutorProfileRouter);
+app.use("/api/tutor/availability", tutorAvailabilityRouter);
 
 app.get("/", (req, res) => {
 	res.send("Hii, This is arif");

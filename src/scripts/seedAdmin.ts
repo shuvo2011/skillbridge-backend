@@ -15,6 +15,7 @@ const ADMIN = {
 	name: "Rahim Uddin",
 	email: "rahim@example.com",
 	password: "admin1234",
+	status: "ACTIVE",
 };
 
 const seedAdmin = async () => {
@@ -40,6 +41,7 @@ const seedAdmin = async () => {
 					name: ADMIN.name,
 					email: ADMIN.email,
 					password: ADMIN.password,
+					status: ADMIN.status,
 				}),
 			});
 
@@ -66,6 +68,7 @@ const seedAdmin = async () => {
 			data: {
 				role: "ADMIN",
 				emailVerified: true,
+				status: "ACTIVE",
 			},
 			select: {
 				id: true,
@@ -73,6 +76,7 @@ const seedAdmin = async () => {
 				email: true,
 				role: true,
 				emailVerified: true,
+				status: true,
 			},
 		});
 
