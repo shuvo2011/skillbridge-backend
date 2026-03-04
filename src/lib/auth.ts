@@ -28,6 +28,12 @@ export const auth = betterAuth({
 				required: true,
 				input: true,
 			},
+			status: {
+				type: "string",
+				defaultValue: "PENDING",
+				required: false,
+				input: false,
+			},
 			banned: {
 				type: "boolean",
 				defaultValue: false,
@@ -137,7 +143,7 @@ If you did not create this account, you can safely ignore this email.
 						await prisma.tutorProfiles.upsert({
 							where: { userId: user.id },
 							update: {},
-							create: { userId: user.id, status: "ACTIVE" },
+							create: { userId: user.id },
 						});
 					}
 				},
