@@ -149,6 +149,7 @@ model Booking {
   student      Student           @relation(fields: [studentId], references: [id])
   tutor        TutorProfiles     @relation(fields: [tutorId], references: [id])
   availability TutorAvailability @relation(fields: [availabilityId], references: [id])
+  review       Review?
 
   @@map("bookings")
 }
@@ -157,6 +158,7 @@ model Review {
   id         String   @id @default(uuid())
   studentId  String
   tutorId    String
+  bookingId  String   @unique // one booking = one review
   rating     Int
   reviewText String   @db.Text
   createdAt  DateTime @default(now())
@@ -164,6 +166,7 @@ model Review {
 
   student Student       @relation(fields: [studentId], references: [id])
   tutor   TutorProfiles @relation(fields: [tutorId], references: [id])
+  booking Booking       @relation(fields: [bookingId], references: [id])
 
   @@map("reviews")
 }
