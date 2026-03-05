@@ -7,6 +7,8 @@ import { studentRouter } from "./modules/student/student.router";
 import { userRouter } from "./modules/user/user.router";
 import { tutorProfileRouter } from "./modules/tutorProfile/tutorProfile.router";
 import { tutorAvailabilityRouter } from "./modules/tutorAvailability/tutorAvailability.router";
+import { tutorCategoryRouter } from "./modules/tutorCategory/tutorCategory.router";
+import { bookingRouter } from "./modules/booking/booking.router";
 
 const app: Application = express();
 
@@ -25,6 +27,8 @@ app.use("/api/students", studentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/tutors", tutorProfileRouter);
 app.use("/api/tutor/availability", tutorAvailabilityRouter);
+app.use("/api/tutor/categories", tutorCategoryRouter);
+app.use("/api/bookings", bookingRouter);
 
 app.get("/", (req, res) => {
 	res.send("Hii, This is arif");
