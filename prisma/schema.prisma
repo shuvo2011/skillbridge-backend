@@ -31,8 +31,6 @@ model User {
   banReason  String?   @default("Violated terms of service")
   banExpires DateTime?
 
-  status String? @default("PENDING")
-
   @@unique([email])
   @@map("user")
 }
@@ -227,10 +225,4 @@ enum DayOfWeek {
   FRIDAY
   SATURDAY
   SUNDAY
-}
-
-enum UserStatus {
-  PENDING
-  ACTIVE
-  DEACTIVATE
 }

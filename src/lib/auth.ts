@@ -28,12 +28,6 @@ export const auth = betterAuth({
 				required: true,
 				input: true,
 			},
-			status: {
-				type: "string",
-				defaultValue: "PENDING",
-				required: false,
-				input: false,
-			},
 			banned: {
 				type: "boolean",
 				defaultValue: false,
