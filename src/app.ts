@@ -33,7 +33,7 @@ app.use("/api/bookings", bookingRouter);
 app.use("/api/reviews", reviewRouter);
 
 app.get("/", (req, res) => {
-	res.send("Hii, This is arif");
+	res.send("Thank you for visiting SkillBridge and showing your interest.");
 });
 
 export default app;

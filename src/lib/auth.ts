@@ -189,7 +189,6 @@ If you didn't create a Skill Bridge account, you can safely ignore this email.
 				},
 				after: async (user) => {
 					const role = (user as any).role as string;
-
 					// ✅ ADMIN হলে কোনো profile create হবে না
 					if (role === "ADMIN") return;
 

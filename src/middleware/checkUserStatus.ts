@@ -12,7 +12,6 @@ export const checkUserStatus = async (req: Request, res: Response, next: NextFun
 		const user = await prisma.user.findUnique({
 			where: { id: userId },
 			select: {
-				status: true,
 				banned: true,
 				banReason: true,
 				banExpires: true,
@@ -21,13 +20,6 @@ export const checkUserStatus = async (req: Request, res: Response, next: NextFun
 
 		if (!user) {
 			return res.status(404).json({ error: "User not found" });
-		}
-
-		if (user.status !== "ACTIVE") {
-			return res.status(403).json({
-				error: "Account not active",
-				details: user.status === "PENDING" ? "Your account is pending approval" : "Your account has been deactivated",
-			});
 		}
 
 		if (user.banned) {
