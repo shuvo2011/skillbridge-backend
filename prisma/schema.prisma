@@ -90,6 +90,7 @@ model Category {
   updatedAt       DateTime        @updatedAt
   status          CategoryStatus  @default(PUBLISHED)
   tutorCategories TutorCategory[]
+  bookings        Booking[]
 
   @@map("categories")
 }
@@ -137,10 +138,11 @@ model Booking {
   id             String        @id @default(uuid())
   studentId      String
   tutorId        String
-  availabilityId String // কোন slot book হয়েছে
-  sessionDate    DateTime // কোন date
-  slotFrom       String // "09:00"
-  slotTo         String // "10:00"
+  availabilityId String
+  categoryId     String
+  sessionDate    DateTime
+  slotFrom       String
+  slotTo         String
   status         BookingStatus @default(CONFIRMED)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -148,6 +150,7 @@ model Booking {
   student      Student           @relation(fields: [studentId], references: [id])
   tutor        TutorProfiles     @relation(fields: [tutorId], references: [id])
   availability TutorAvailability @relation(fields: [availabilityId], references: [id])
+  category     Category          @relation(fields: [categoryId], references: [id])
   review       Review?
 
   @@map("bookings")
