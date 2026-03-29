@@ -29,6 +29,11 @@ export const authenticate = (...roles: UserRole[]) => {
 			const session = await auth.api.getSession({
 				headers: req.headers as any,
 			});
+
+			console.log("Session:", session); // ← এটা add করো
+			console.log("User role:", session?.user?.role); // ← এটা add করো
+			console.log("Required roles:", roles); // ← এটা add করো
+
 			if (!session) {
 				return res.status(401).json({
 					success: false,

@@ -23,12 +23,12 @@ app.use(
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
-app.use("/api/categories", categoryRouter);
 app.use("/api/students", studentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/tutors", tutorProfileRouter);
 app.use("/api/tutor/availability", tutorAvailabilityRouter);
 app.use("/api/tutor/categories", tutorCategoryRouter);
+app.use("/api/categories", categoryRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/reviews", reviewRouter);
 

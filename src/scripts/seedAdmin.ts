@@ -13,7 +13,7 @@ const host = url.host;
 
 const ADMIN = {
 	name: "Rahim Uddin",
-	email: "rahim@example.com",
+	email: "rahim@skillbridge.com",
 	password: "Pa$$w0rd!",
 };
 
