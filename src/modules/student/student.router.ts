@@ -5,6 +5,11 @@ import { checkUserStatus } from "../../middleware/checkUserStatus";
 
 const router = express.Router();
 
+
+// ✅ /profile আগে
+router.get("/profile", authenticate(UserRole.STUDENT), checkUserStatus, studentController.getMyProfile);
+router.put("/profile", authenticate(UserRole.STUDENT), checkUserStatus, studentController.updateMyProfile);
+
 router.get("/", authenticate(UserRole.ADMIN), studentController.getAllStudents);
 router.get("/:id", authenticate(UserRole.ADMIN, UserRole.STUDENT), checkUserStatus, studentController.getStudentById);
 router.patch("/:id", authenticate(UserRole.ADMIN, UserRole.STUDENT), checkUserStatus, studentController.updateStudent);

@@ -9,6 +9,37 @@ type UpdateStudentPayload = {
 	email?: string;
 };
 
+
+// services/student.service.ts
+const getMyProfile = async (userId: string) => {
+	const student = await prisma.student.findFirst({
+		where: { userId },
+		include: {
+			user: {
+				select: {
+					name: true,
+					email: true,
+					image: true,
+				},
+			},
+		},
+	});
+
+	if (!student) throw new Error("Profile not found");
+	return student;
+};
+
+const updateMyProfile = async (userId: string, data: { phone?: string; address?: string; bio?: string }) => {
+	return await prisma.student.update({
+		where: { userId },
+		data: {
+			...(data.phone !== undefined && { phone: data.phone }),
+			...(data.address !== undefined && { address: data.address }),
+			...(data.bio !== undefined && { bio: data.bio }),
+		},
+	});
+};
+
 const getAllStudents = async () => {
 	return await prisma.student.findMany({
 		include: {
@@ -108,6 +139,8 @@ const deleteStudent = async (id: string) => {
 };
 
 export const studentService = {
+	getMyProfile,
+	updateMyProfile,
 	getAllStudents,
 	getStudentById,
 	updateStudent,
