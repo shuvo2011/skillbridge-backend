@@ -2,6 +2,31 @@ import { Request, Response } from "express";
 import { userService } from "./user.service";
 import { requireUser } from "../../middleware/requireUser";
 
+
+// user.controller.ts এ add করো
+const updateUserInfo = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id;
+		const { name, email, image } = req.body; // ✅ image যোগ
+
+		const updated = await userService.updateUserInfo(userId as string, { name, email, image });
+
+		res.status(200).json(updated);
+	} catch (error: any) {
+		res.status(error.statusCode || 500).json({ message: error.message });
+	}
+};
+const changePassword = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id;
+		const { currentPassword, newPassword } = req.body;
+
+		const updated = await userService.changePassword(userId as string, { currentPassword, newPassword });
+		res.status(200).json(updated);
+	} catch (error: any) {
+		res.status(400).json({ message: error.message });
+	}
+};
 const banUser = async (req: Request, res: Response) => {
 	try {
 		const { userId } = req.params;
@@ -40,6 +65,8 @@ const unbanUser = async (req: Request, res: Response) => {
 };
 
 export const userController = {
+	updateUserInfo,
+	changePassword,
 	banUser,
 	unbanUser,
 };

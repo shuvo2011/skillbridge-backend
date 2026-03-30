@@ -13,6 +13,24 @@ const getAllTutors = async (req: Request, res: Response) => {
 	}
 };
 
+
+const getMyProfile = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id;
+		console.log("userId:", userId); // ← add করো
+		const profile = await tutorService.getMyProfile(userId as string);
+		console.log("profile:", profile); // ← add করো
+
+		if (!profile) {
+			return res.status(200).json({});
+		}
+
+		res.status(200).json(profile);
+	} catch (error: any) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
 const getTutorById = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
@@ -71,6 +89,7 @@ const deleteTutor = async (req: Request, res: Response) => {
 
 export const tutorController = {
 	getAllTutors,
+	getMyProfile,
 	getTutorById,
 	updateTutorProfile,
 	deleteTutor,

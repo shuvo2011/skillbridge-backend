@@ -26,6 +26,13 @@ const getAllTutors = async () => {
 	});
 };
 
+
+const getMyProfile = async (userId: string) => {
+	return await prisma.tutorProfiles.findUnique({
+		where: { userId },
+	});
+};
+
 // GET single tutor
 const getTutorById = async (id: string) => {
 	const tutor = await prisma.tutorProfiles.findUnique({
@@ -114,6 +121,7 @@ const deleteTutor = async (id: string) => {
 
 export const tutorService = {
 	getAllTutors,
+	getMyProfile,
 	getTutorById,
 	updateTutorProfile,
 	deleteTutor,
