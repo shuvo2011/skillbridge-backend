@@ -1,5 +1,6 @@
 import { DayOfWeek } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+import {buildPaginationMeta} from "../../helpers/paginationHelper";
 
 // ─────────────────────────────────────────────
 // HELPERS
@@ -18,20 +19,63 @@ import { prisma } from "../../lib/prisma";
 // const toTimeStr = (date: Date): string => date.toISOString().slice(11, 16);
 
 // GET ALL availability for a tutor
-const getAllAvailability = async (userId: string) => {
+// tutorAvailability.service.ts
+// tutorAvailability.service.ts
+
+const getAllAvailability = async (payload: {
+	tutorId: string;
+	search?: string;
+	page: number;
+	limit: number;
+	skip: number;
+	take: number;
+	sortBy: string;
+	sortOrder: "asc" | "desc";
+}) => {
+	const s = payload.search?.trim().toUpperCase();
+
 	const tutorProfile = await prisma.tutorProfiles.findUnique({
-		where: { userId },
-		select: { id: true },
+		where: { userId: payload.tutorId },
 	});
 
 	if (!tutorProfile) {
-		throw new Error("Tutor profile not found");
+		return {
+			meta: buildPaginationMeta(payload.page, payload.limit, 0),
+			data: [],
+		};
 	}
 
-	return await prisma.tutorAvailability.findMany({
-		where: { tutorId: tutorProfile.id },
-		orderBy: { dayOfWeek: "asc" },
-	});
+	const where: any = {
+		tutorId: tutorProfile.id,
+		...(s
+			? {
+				dayOfWeek: { equals: s as any },
+			}
+			: {}),
+	};
+
+	const allowedSort = ["createdAt", "updatedAt", "dayOfWeek"];
+	const sortBy = allowedSort.includes(payload.sortBy) ? payload.sortBy : "createdAt";
+
+	try {
+		const [total, data] = await prisma.$transaction([
+			prisma.tutorAvailability.count({ where }),
+			prisma.tutorAvailability.findMany({
+				where,
+				orderBy: { [sortBy]: payload.sortOrder },
+				skip: payload.skip,
+				take: payload.take,
+			}),
+		]);
+
+		return {
+			meta: buildPaginationMeta(payload.page, payload.limit, total),
+			data,
+		};
+	} catch (error) {
+		console.error("Error retrieving availability:", error);
+		throw error;
+	}
 };
 
 // GET single availability slot by id

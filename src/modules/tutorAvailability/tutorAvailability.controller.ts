@@ -1,20 +1,27 @@
 import { Request, Response } from "express";
 import { tutorAvailabilityService } from "./tutorAvailability.service";
 import { DayOfWeek } from "../../../generated/prisma/enums";
+import {paginationHelper} from "../../helpers/paginationHelper";
 
 const VALID_DAYS = Object.values(DayOfWeek);
 const isValidTime = (t: string): boolean => /^([01]\d|2[0-3]):([0-5]\d)$/.test(t);
 
 // GET /api/tutor/availability
+// tutorAvailability.controller.ts
 const getAllAvailability = async (req: Request, res: Response) => {
+	const search = typeof req.query.search === "string" ? req.query.search : undefined;
+	const q = paginationHelper(req);
+
+	const payload: any = { ...q };
+	if (search) payload.search = search;
+	payload.tutorId = req.user?.id;
+
 	try {
-		const tutorId = req.user?.id;
-
-		const data = await tutorAvailabilityService.getAllAvailability(tutorId as string);
-
-		res.status(200).json({ success: true, data });
-	} catch (error: any) {
-		res.status(500).json({ success: false, message: error.message });
+		const result = await tutorAvailabilityService.getAllAvailability(payload);
+		res.status(200).json(result);
+	} catch (error) {
+		console.error("Error retrieving availability:", error);
+		res.status(500).json({ message: "Something went wrong", error });
 	}
 };
 
@@ -143,7 +150,7 @@ const updateAvailability = async (req: Request, res: Response) => {
 			}
 		}
 
-		const data = await tutorAvailabilityService.updateAvailability(userId as string, id, {
+		const data = await tutorAvailabilityService.updateAvailability(userId as string, id as string, {
 			dayOfWeek,
 			availableFrom,
 			availableTo,
@@ -172,7 +179,7 @@ const deleteAvailability = async (req: Request, res: Response) => {
 		const userId = req.user?.id as string;
 		const { id } = req.params;
 
-		await tutorAvailabilityService.deleteAvailability(userId, id);
+		await tutorAvailabilityService.deleteAvailability(userId, id as string);
 
 		res.status(200).json({
 			success: true,
