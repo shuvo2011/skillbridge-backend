@@ -52,7 +52,8 @@ const getTutorReviews = async (tutorId: string) => {
 	const reviews = await prisma.review.findMany({
 		where: { tutorId },
 		include: {
-			student: { include: { user: { select: { name: true } } } },
+			student: { include: { user: { select: { name: true, image: true } } } },
+			booking: { select: { sessionDate: true, category: { select: { name: true } } } }, // ← add
 		},
 		orderBy: { createdAt: "desc" },
 	});

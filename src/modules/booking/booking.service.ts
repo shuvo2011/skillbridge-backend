@@ -187,7 +187,26 @@ const completeBooking = async (userId: string, id: string) => {
 		data: { status: "COMPLETED" },
 	});
 };
+const getReviewableBookings = async (userId: string, tutorId: string) => {
+	const student = await getStudentProfile(userId);
 
+	return await prisma.booking.findMany({
+		where: {
+			studentId: student.id,
+			tutorId,
+			status: "COMPLETED",
+			review: null,  // review নেই এমন
+		},
+		select: {
+			id: true,
+			sessionDate: true,
+			slotFrom: true,
+			slotTo: true,
+			category: { select: { name: true } },
+		},
+		orderBy: { sessionDate: "desc" },
+	});
+};
 export const bookingService = {
 	createBooking,
 	getMyBookings,
@@ -195,4 +214,5 @@ export const bookingService = {
 	cancelBooking,
 	completeBooking,
 	getBookedSlots,
+	getReviewableBookings,
 };

@@ -135,6 +135,25 @@ const completeBooking = async (req: Request, res: Response) => {
 	}
 };
 
+
+const getReviewableBookings = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id as string;
+		const { tutorId } = req.query;
+
+		if (!tutorId || typeof tutorId !== "string") {
+			res.status(400).json({ success: false, message: "tutorId is required" });
+			return;
+		}
+
+		const data = await bookingService.getReviewableBookings(userId, tutorId);
+
+		res.status(200).json({ success: true, data });
+	} catch (error: any) {
+		res.status(500).json({ success: false, message: error.message });
+	}
+};
+
 export const bookingController = {
 	createBooking,
 	getMyBookings,
@@ -142,4 +161,5 @@ export const bookingController = {
 	cancelBooking,
 	completeBooking,
 	getBookedSlots,
+	getReviewableBookings,
 };
