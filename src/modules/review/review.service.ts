@@ -53,8 +53,14 @@ const getTutorReviews = async (tutorId: string) => {
 		where: { tutorId },
 		include: {
 			student: { include: { user: { select: { name: true, image: true } } } },
-			booking: { select: { sessionDate: true, category: { select: { name: true } } } }, // ← add
+			booking: {
+				select: {
+					sessionDate: true,
+					category: { select: { name: true } },
+				},
+			},
 		},
+
 		orderBy: { createdAt: "desc" },
 	});
 

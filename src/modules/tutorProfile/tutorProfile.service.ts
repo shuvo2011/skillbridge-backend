@@ -7,6 +7,7 @@ type UpdateTutorPayload = {
 	phone?: string;
 	address?: string;
 	profilePicture?: string;
+	price?: number;
 	// user table
 	name?: string;
 	email?: string;
@@ -57,7 +58,9 @@ const getTutorById = async (id: string) => {
 					},
 				},
 			},
-			availability: true,
+			availability: {
+				select: { id: true, tutorId: true, availableFrom: true,availableTo:true, dayOfWeek:true },
+			},
 			reviews: {
 				include: {
 					student: {
@@ -65,7 +68,14 @@ const getTutorById = async (id: string) => {
 							user: { select: { name: true, image: true } },
 						},
 					},
+					booking: {
+						select: {
+							sessionDate: true,
+							category: { select: { name: true } },
+						},
+					},
 				},
+
 			},
 		},
 	});
@@ -80,7 +90,7 @@ const updateTutorProfile = async (userId: string, payload: UpdateTutorPayload) =
 		throw new Error("Tutor not found");
 	}
 
-	const { bio, qualification, experienceYears, phone, address, profilePicture, name, email } = payload;
+	const { bio, qualification, experienceYears, phone, address, profilePicture, name, email, price } = payload;
 
 	const tutorData = {
 		...(bio !== undefined && { bio }),
@@ -89,6 +99,7 @@ const updateTutorProfile = async (userId: string, payload: UpdateTutorPayload) =
 		...(phone !== undefined && { phone }),
 		...(address !== undefined && { address }),
 		...(profilePicture !== undefined && { profilePicture }),
+		...(price !== undefined && { price }),
 	};
 
 	const userData = {

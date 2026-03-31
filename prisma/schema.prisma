@@ -122,6 +122,7 @@ model TutorProfiles {
   isFeatured      Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  price           Decimal  @default(0) @db.Decimal(10, 2)
 
   user            User                @relation(fields: [userId], references: [id])
   availability    TutorAvailability[]

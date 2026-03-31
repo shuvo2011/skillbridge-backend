@@ -17,9 +17,7 @@ const getAllTutors = async (req: Request, res: Response) => {
 const getMyProfile = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id;
-		console.log("userId:", userId); // ← add করো
 		const profile = await tutorService.getMyProfile(userId as string);
-		console.log("profile:", profile); // ← add করো
 
 		if (!profile) {
 			return res.status(200).json({});
@@ -48,7 +46,7 @@ const updateTutorProfile = async (req: Request, res: Response) => {
 	try {
 		// authenticate middleware থেকে userId আসবে
 		const userId = req.user?.id;
-		const { bio, qualification, experienceYears, phone, address, profilePicture, name, email } = req.body;
+		const { bio, qualification, experienceYears, phone, address, profilePicture, name, email, price } = req.body;
 
 		const result = await tutorService.updateTutorProfile(userId as string, {
 			bio,
@@ -57,8 +55,9 @@ const updateTutorProfile = async (req: Request, res: Response) => {
 			phone,
 			address,
 			profilePicture,
+			price,
 			name,
-			email,
+			email
 		});
 
 		res.status(200).json(result);
