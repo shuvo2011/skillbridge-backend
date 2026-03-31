@@ -4,7 +4,7 @@ import { checkUserStatus } from "../../middleware/checkUserStatus";
 import { bookingController } from "./booking.controller";
 
 const router = express.Router();
-
+router.get("/booked-slots", bookingController.getBookedSlots);
 router.post("/", authenticate(UserRole.STUDENT), checkUserStatus, bookingController.createBooking);
 router.get("/", authenticate(UserRole.STUDENT, UserRole.TUTOR), checkUserStatus, bookingController.getMyBookings);
 router.get("/:id", authenticate(UserRole.STUDENT, UserRole.TUTOR), checkUserStatus, bookingController.getBookingById);

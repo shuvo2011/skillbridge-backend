@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
 import { bookingService } from "./booking.service";
 
+// controller এ categoryId add করো
 const createBooking = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id as string;
-		const { availabilityId, sessionDate } = req.body;
+		const { availabilityId, sessionDate, categoryId } = req.body; // ← add
 
-		if (!availabilityId || !sessionDate) {
+		if (!availabilityId || !sessionDate || !categoryId) { // ← add
 			res.status(400).json({
 				success: false,
-				message: "availabilityId and sessionDate are required",
+				message: "availabilityId, sessionDate and categoryId are required",
 			});
 			return;
 		}
 
-		// Past date check
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 		const selected = new Date(sessionDate);
@@ -28,7 +28,7 @@ const createBooking = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const data = await bookingService.createBooking(userId, availabilityId, sessionDate);
+		const data = await bookingService.createBooking(userId, availabilityId, sessionDate, categoryId);
 
 		res.status(201).json({
 			success: true,
@@ -46,6 +46,22 @@ const createBooking = async (req: Request, res: Response) => {
 		res.status(status).json({ success: false, message: error.message });
 	}
 };
+
+const getBookedSlots = async (req: Request, res: Response) => {
+	try {
+		const { tutorId, date } = req.query;
+
+		if (!tutorId || !date) {
+			return res.status(400).json({ message: "tutorId and date required" });
+		}
+
+		const data = await bookingService.getBookedSlots(tutorId as string, date as string);
+		res.status(200).json({ data });
+	} catch (error: any) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
 const getMyBookings = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id as string;
@@ -66,7 +82,7 @@ const getBookingById = async (req: Request, res: Response) => {
 		const role = req.user?.role as string;
 		const { id } = req.params;
 
-		const data = await bookingService.getBookingById(userId, role, id);
+		const data = await bookingService.getBookingById(userId, role, id as string);
 
 		res.status(200).json({ success: true, data });
 	} catch (error: any) {
@@ -80,7 +96,7 @@ const cancelBooking = async (req: Request, res: Response) => {
 		const userId = req.user?.id as string;
 		const { id } = req.params;
 
-		const data = await bookingService.cancelBooking(userId, id);
+		const data = await bookingService.cancelBooking(userId, id as string);
 
 		res.status(200).json({
 			success: true,
@@ -102,7 +118,7 @@ const completeBooking = async (req: Request, res: Response) => {
 		const userId = req.user?.id as string;
 		const { id } = req.params;
 
-		const data = await bookingService.completeBooking(userId, id);
+		const data = await bookingService.completeBooking(userId, id as string);
 
 		res.status(200).json({
 			success: true,
@@ -125,4 +141,5 @@ export const bookingController = {
 	getBookingById,
 	cancelBooking,
 	completeBooking,
+	getBookedSlots,
 };

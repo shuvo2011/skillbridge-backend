@@ -23,17 +23,22 @@ const getTutorProfile = async (userId: string) => {
 };
 
 // CREATE booking
-const createBooking = async (userId: string, availabilityId: string, sessionDate: string) => {
+// service এ categoryId add করো
+const createBooking = async (userId: string, availabilityId: string, sessionDate: string, categoryId: string) => {
 	const student = await getStudentProfile(userId);
 
-	// Availability exists check
 	const availability = await prisma.tutorAvailability.findUnique({
 		where: { id: availabilityId },
 	});
 
 	if (!availability) throw new Error("Availability slot not found");
 
-	// sessionDate এর day, availability এর dayOfWeek match করে কিনা
+	// category exists check
+	const category = await prisma.category.findUnique({
+		where: { id: categoryId },
+	});
+	if (!category) throw new Error("Category not found");
+
 	const date = new Date(sessionDate);
 	const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 	const dateDayOfWeek = days[date.getDay()];
@@ -42,7 +47,6 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 		throw new Error(`Selected date is a ${dateDayOfWeek} but slot is for ${availability.dayOfWeek}`);
 	}
 
-	// Double booking check — same tutor, same date, same slot
 	const conflict = await prisma.booking.findFirst({
 		where: {
 			tutorId: availability.tutorId,
@@ -51,12 +55,8 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 			status: { not: "CANCELLED" },
 		},
 	});
+	if (conflict) throw new Error("This slot is already booked");
 
-	if (conflict) {
-		throw new Error("This slot is already booked");
-	}
-
-	// Student already booked same time on same date?
 	const studentConflict = await prisma.booking.findFirst({
 		where: {
 			studentId: student.id,
@@ -65,16 +65,14 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 			status: { not: "CANCELLED" },
 		},
 	});
-
-	if (studentConflict) {
-		throw new Error("You already have a booking at this time");
-	}
+	if (studentConflict) throw new Error("You already have a booking at this time");
 
 	return await prisma.booking.create({
 		data: {
 			studentId: student.id,
 			tutorId: availability.tutorId,
 			availabilityId,
+			categoryId, // ← add করো
 			sessionDate: new Date(sessionDate),
 			slotFrom: availability.availableFrom,
 			slotTo: availability.availableTo,
@@ -84,8 +82,22 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 			student: { include: { user: { select: { name: true, email: true } } } },
 			tutor: { include: { user: { select: { name: true, email: true } } } },
 			availability: true,
+			category: { select: { id: true, name: true } },
 		},
 	});
+};
+
+
+const getBookedSlots = async (tutorId: string, date: string) => {
+	const bookings = await prisma.booking.findMany({
+		where: {
+			tutorId,
+			sessionDate: new Date(date),
+			status: { not: "CANCELLED" },
+		},
+		select: { slotFrom: true, slotTo: true },
+	});
+	return bookings;
 };
 
 // GET my bookings (student বা tutor উভয়ের জন্য)
@@ -95,8 +107,9 @@ const getMyBookings = async (userId: string, role: string) => {
 		return await prisma.booking.findMany({
 			where: { studentId: student.id },
 			include: {
-				tutor: { include: { user: { select: { name: true, email: true } } } },
+				tutor: { include: { user: { select: { name: true, email: true, image:true } } } },
 				availability: true,
+				category: { select: { id: true, name: true } },
 			},
 			orderBy: { sessionDate: "desc" },
 		});
@@ -105,8 +118,9 @@ const getMyBookings = async (userId: string, role: string) => {
 		return await prisma.booking.findMany({
 			where: { tutorId: tutor.id },
 			include: {
-				student: { include: { user: { select: { name: true, email: true } } } },
+				student: { include: { user: { select: { name: true, email: true , image: true} } } },
 				availability: true,
+				category: { select: { id: true, name: true } },
 			},
 			orderBy: { sessionDate: "desc" },
 		});
@@ -180,4 +194,5 @@ export const bookingService = {
 	getBookingById,
 	cancelBooking,
 	completeBooking,
+	getBookedSlots,
 };
