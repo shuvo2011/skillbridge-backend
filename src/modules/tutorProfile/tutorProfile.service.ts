@@ -21,7 +21,16 @@ const getAllTutors = async () => {
 					email: true,
 				},
 			},
-			tutorCategories: true,
+			tutorCategories: {
+				include: {
+					category: { // ← এটা add করো
+						select: { id: true, name: true },
+					},
+				},
+			},
+			reviews: {
+				select: { rating: true },
+			},
 		},
 	});
 };
@@ -35,26 +44,31 @@ const getMyProfile = async (userId: string) => {
 
 // GET single tutor
 const getTutorById = async (id: string) => {
-	const tutor = await prisma.tutorProfiles.findUnique({
+	return await prisma.tutorProfiles.findUnique({
 		where: { id },
 		include: {
 			user: {
-				select: {
-					name: true,
-					email: true,
+				select: { name: true, email: true, image: true },
+			},
+			tutorCategories: {
+				include: {
+					category: { // ← এটা add করো
+						select: { id: true, name: true },
+					},
 				},
 			},
-			tutorCategories: true,
 			availability: true,
-			reviews: true,
+			reviews: {
+				include: {
+					student: {
+						include: {
+							user: { select: { name: true, image: true } },
+						},
+					},
+				},
+			},
 		},
 	});
-
-	if (!tutor) {
-		throw new Error("Tutor not found");
-	}
-
-	return tutor;
 };
 
 const updateTutorProfile = async (userId: string, payload: UpdateTutorPayload) => {
