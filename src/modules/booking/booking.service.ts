@@ -29,6 +29,9 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 
 	const availability = await prisma.tutorAvailability.findUnique({
 		where: { id: availabilityId },
+		include: {
+			tutor: { select: { price: true } },
+		},
 	});
 
 	if (!availability) throw new Error("Availability slot not found");
@@ -73,6 +76,7 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 			tutorId: availability.tutorId,
 			availabilityId,
 			categoryId, // ← add করো
+			price: availability.tutor.price ?? null,
 			sessionDate: new Date(sessionDate),
 			slotFrom: availability.availableFrom,
 			slotTo: availability.availableTo,
