@@ -21,6 +21,7 @@ const getAllTutors = async () => {
 					name: true,
 					email: true,
 					image: true,
+					banned: true,
 				},
 			},
 			tutorCategories: {
@@ -50,7 +51,7 @@ const getTutorById = async (id: string) => {
 		where: { id },
 		include: {
 			user: {
-				select: { name: true, email: true, image: true },
+				select: { name: true, email: true, image: true, banned:true, },
 			},
 			tutorCategories: {
 				include: {
