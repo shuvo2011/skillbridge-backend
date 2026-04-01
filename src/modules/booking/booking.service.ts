@@ -115,7 +115,7 @@ const getMyBookings = async (userId: string, role: string) => {
 				availability: true,
 				category: { select: { id: true, name: true } },
 			},
-			orderBy: { sessionDate: "desc" },
+			orderBy: {createdAt:"desc" },
 		});
 	} else {
 		const tutor = await getTutorProfile(userId);

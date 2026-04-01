@@ -20,6 +20,7 @@ const getAllTutors = async () => {
 				select: {
 					name: true,
 					email: true,
+					image: true,
 				},
 			},
 			tutorCategories: {
