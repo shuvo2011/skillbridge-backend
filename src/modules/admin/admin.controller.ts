@@ -26,4 +26,16 @@ const updateUserStatus = async (req: Request, res: Response) => {
     }
 };
 
-export const adminController = { getAllUsers, updateUserStatus };
+const getAllBookings = async (req: Request, res: Response) => {
+    try {
+        const search = typeof req.query.search === "string" ? req.query.search : undefined;
+        const status = typeof req.query.status === "string" ? req.query.status : undefined;
+
+        const data = await adminService.getAllBookings({ search, status });
+        res.status(200).json({ success: true, data });
+    } catch (error: any) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const adminController = { getAllUsers, updateUserStatus,getAllBookings };

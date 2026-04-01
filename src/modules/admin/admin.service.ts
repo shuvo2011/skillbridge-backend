@@ -51,4 +51,40 @@ const updateUserStatus = async (id: string, data: { banned: boolean; banReason?:
     });
 };
 
-export const adminService = { getAllUsers, updateUserStatus };
+
+// modules/admin/admin.service.ts এ add করো
+const getAllBookings = async (params: { search?: string | undefined; status?: string | undefined }) => {
+    const where: any = {
+        ...(params.status ? { status: params.status } : {}),
+        ...(params.search
+            ? {
+                OR: [
+                    { student: { user: { name: { contains: params.search, mode: "insensitive" } } } },
+                    { tutor: { user: { name: { contains: params.search, mode: "insensitive" } } } },
+                    { category: { name: { contains: params.search, mode: "insensitive" } } },
+                ],
+            }
+            : {}),
+    };
+
+    return await prisma.booking.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        include: {
+            student: {
+                include: {
+                    user: { select: { name: true, email: true, image: true } },
+                },
+            },
+            tutor: {
+                include: {
+                    user: { select: { name: true, email: true, image: true } },
+                },
+            },
+            category: { select: { id: true, name: true } },
+            availability: { select: { dayOfWeek: true } },
+        },
+    });
+};
+
+export const adminService = { getAllUsers, updateUserStatus, getAllBookings };
