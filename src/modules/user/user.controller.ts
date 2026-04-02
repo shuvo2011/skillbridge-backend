@@ -2,12 +2,10 @@ import { Request, Response } from "express";
 import { userService } from "./user.service";
 import { requireUser } from "../../middleware/requireUser";
 
-
-// user.controller.ts এ add করো
 const updateUserInfo = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id;
-		const { name, email, image } = req.body; // ✅ image যোগ
+		const { name, email, image } = req.body;
 
 		const updated = await userService.updateUserInfo(userId as string, { name, email, image });
 

@@ -13,7 +13,6 @@ const getAllTutors = async (req: Request, res: Response) => {
 	}
 };
 
-
 const getMyProfile = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id;
@@ -44,7 +43,6 @@ const getTutorById = async (req: Request, res: Response) => {
 
 const updateTutorProfile = async (req: Request, res: Response) => {
 	try {
-		// authenticate middleware থেকে userId আসবে
 		const userId = req.user?.id;
 		const { bio, qualification, experienceYears, phone, address, profilePicture, name, email, price } = req.body;
 
@@ -57,7 +55,7 @@ const updateTutorProfile = async (req: Request, res: Response) => {
 			profilePicture,
 			price,
 			name,
-			email
+			email,
 		});
 
 		res.status(200).json(result);
@@ -97,7 +95,7 @@ const getMyStats = async (req: Request, res: Response) => {
 
 const toggleFeatured = async (req: Request, res: Response) => {
 	try {
-		const { id } = req.params; // tutor profile id
+		const { id } = req.params;
 		const result = await tutorService.toggleFeatured(id as string);
 		res.status(200).json({ success: true, data: result });
 	} catch (error: any) {

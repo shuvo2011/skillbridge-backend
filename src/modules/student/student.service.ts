@@ -9,8 +9,6 @@ type UpdateStudentPayload = {
 	email?: string;
 };
 
-
-// services/student.service.ts
 const getMyProfile = async (userId: string) => {
 	const student = await prisma.student.findFirst({
 		where: { userId },
@@ -89,7 +87,6 @@ const updateStudent = async (id: string, payload: UpdateStudentPayload) => {
 
 	const { bio, phone, address, profilePicture, name, email } = payload;
 
-	// undefined হলে object এ include করবে না
 	const studentData = {
 		...(bio !== undefined && { bio }),
 		...(phone !== undefined && { phone }),

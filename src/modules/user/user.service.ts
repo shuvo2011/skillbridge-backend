@@ -1,9 +1,8 @@
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
 import bcrypt from "bcrypt";
-// user.service.ts এ add করো
-// user.service.ts
-const updateUserInfo = async (userId: string, data: { name?: string; email?: string; image?: string }) => { // ✅ image যোগ
+
+const updateUserInfo = async (userId: string, data: { name?: string; email?: string; image?: string }) => {
 	if (data.email) {
 		const existing = await prisma.user.findFirst({
 			where: { email: data.email, NOT: { id: userId } },
@@ -19,19 +18,18 @@ const updateUserInfo = async (userId: string, data: { name?: string; email?: str
 		data: {
 			...(data.name && { name: data.name }),
 			...(data.email && { email: data.email }),
-			...(data.image && { image: data.image }), // ✅ image যোগ
+			...(data.image && { image: data.image }),
 		},
 		select: {
 			id: true,
 			name: true,
 			email: true,
 			role: true,
-			image: true, // ✅ response এ image যোগ
+			image: true,
 		},
 	});
 };
 
-// user.service.ts এ add করো
 const changePassword = async (userId: string, data: { currentPassword: string; newPassword: string }) => {
 	const account = await prisma.account.findFirst({
 		where: { userId },
@@ -42,7 +40,6 @@ const changePassword = async (userId: string, data: { currentPassword: string; n
 		throw new Error("Account not found");
 	}
 
-	// ✅ bcrypt এর বদলে Better Auth এর password hasher ব্যবহার করো
 	const ctx = await auth.$context;
 	const isMatch = await ctx.password.verify({
 		hash: account.password,
@@ -53,7 +50,6 @@ const changePassword = async (userId: string, data: { currentPassword: string; n
 		throw new Error("Current password is incorrect");
 	}
 
-	// ✅ নতুন password ও Better Auth দিয়ে hash করো
 	const hashedPassword = await ctx.password.hash(data.newPassword);
 
 	await prisma.account.update({

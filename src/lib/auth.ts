@@ -3,8 +3,6 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import nodemailer from "nodemailer";
 
-// If your Prisma file is located elsewhere, you can change the path
-
 const transporter = nodemailer.createTransport({
 	host: "sandbox.smtp.mailtrap.io",
 	port: 2525,
@@ -176,7 +174,6 @@ If you didn't create a Skill Bridge account, you can safely ignore this email.
 				before: async (payload) => {
 					const data = (payload as any).data ?? payload;
 
-					// ✅ seed admin bypass
 					if (data.__seedAdmin === true) {
 						delete data.__seedAdmin;
 						data.role = "ADMIN";
@@ -189,7 +186,7 @@ If you didn't create a Skill Bridge account, you can safely ignore this email.
 				},
 				after: async (user) => {
 					const role = (user as any).role as string;
-					// ✅ ADMIN হলে কোনো profile create হবে না
+
 					if (role === "ADMIN") return;
 
 					if (role === "STUDENT") {

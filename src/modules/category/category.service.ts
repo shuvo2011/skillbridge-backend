@@ -1,6 +1,6 @@
 import { CategoryStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
-import { buildPaginationMeta } from "../../helpers/paginationHelper"
+import { buildPaginationMeta } from "../../helpers/paginationHelper";
 type CreateCategoryPayload = {
 	name: string;
 	status?: CategoryStatus;
@@ -17,35 +17,28 @@ const getAllCategories = async (payload: {
 }) => {
 	const s = payload.search?.trim();
 
-	// Set up where conditions for search and other filters
 	const where: any = {
 		...(s
 			? {
-				OR: [
-					{ name: { contains: s, mode: "insensitive" } },
-					{ status: { contains: s, mode: "insensitive" } }, // assuming you also want to search by status
-				],
-			}
+					OR: [{ name: { contains: s, mode: "insensitive" } }, { status: { contains: s, mode: "insensitive" } }],
+				}
 			: {}),
 	};
 
-	// Sort configuration - safe check
 	const allowedSort = ["createdAt", "updatedAt", "name"];
 	const sortBy = allowedSort.includes(payload.sortBy) ? payload.sortBy : "createdAt";
 
 	try {
-		// Prisma transaction to get both total count and data
 		const [total, data] = await prisma.$transaction([
-			prisma.category.count({ where }), // Get the total number of matching categories
+			prisma.category.count({ where }),
 			prisma.category.findMany({
 				where,
-				orderBy: { [sortBy]: payload.sortOrder }, // Sorting by allowed fields
-				skip: payload.skip, // Pagination
-				take: payload.take, // Pagination
+				orderBy: { [sortBy]: payload.sortOrder },
+				skip: payload.skip,
+				take: payload.take,
 			}),
 		]);
 
-		// Return the data and pagination metadata
 		return {
 			meta: buildPaginationMeta(payload.page, payload.limit, total),
 			data,
@@ -90,7 +83,6 @@ const createCategory = async (payload: CreateCategoryPayload) => {
 		throw error;
 	}
 };
-
 
 const updateCategory = async (id: string, payload: CreateCategoryPayload) => {
 	try {

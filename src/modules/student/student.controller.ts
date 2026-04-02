@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { studentService } from "./student.service";
 
-
 const getMyProfile = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id;
@@ -60,8 +59,8 @@ const updateStudent = async (req: Request, res: Response) => {
 			phone,
 			address,
 			profilePicture,
-			name, // user table এর field
-			email, // user table এর field
+			name,
+			email,
 		});
 
 		res.status(200).json(result);

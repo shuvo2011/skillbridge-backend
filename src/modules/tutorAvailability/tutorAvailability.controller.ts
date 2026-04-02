@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
 import { tutorAvailabilityService } from "./tutorAvailability.service";
 import { DayOfWeek } from "../../../generated/prisma/enums";
-import {paginationHelper} from "../../helpers/paginationHelper";
+import { paginationHelper } from "../../helpers/paginationHelper";
 
 const VALID_DAYS = Object.values(DayOfWeek);
 const isValidTime = (t: string): boolean => /^([01]\d|2[0-3]):([0-5]\d)$/.test(t);
 
-// GET /api/tutor/availability
-// tutorAvailability.controller.ts
 const getAllAvailability = async (req: Request, res: Response) => {
 	const search = typeof req.query.search === "string" ? req.query.search : undefined;
 	const q = paginationHelper(req);
@@ -25,7 +23,6 @@ const getAllAvailability = async (req: Request, res: Response) => {
 	}
 };
 
-// GET /api/tutor/availability/:id
 const getAvailabilityById = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id as string;
@@ -43,7 +40,6 @@ const getAvailabilityById = async (req: Request, res: Response) => {
 	}
 };
 
-// POST /api/tutor/availability
 const createAvailability = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id;
@@ -73,7 +69,6 @@ const createAvailability = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// Exactly 1 hour check
 		const [fromHour, fromMin] = availableFrom.split(":").map(Number);
 		const [toHour, toMin] = availableTo.split(":").map(Number);
 		const diffMinutes = toHour * 60 + toMin - (fromHour * 60 + fromMin);
@@ -104,7 +99,6 @@ const createAvailability = async (req: Request, res: Response) => {
 	}
 };
 
-// PUT /api/tutor/availability/:id
 const updateAvailability = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id;
@@ -135,7 +129,6 @@ const updateAvailability = async (req: Request, res: Response) => {
 			return;
 		}
 
-		// 1 hour check — দুটোই দিলে তখনই check করো
 		if (availableFrom && availableTo) {
 			const [fromHour, fromMin] = availableFrom.split(":").map(Number);
 			const [toHour, toMin] = availableTo.split(":").map(Number);
@@ -173,7 +166,6 @@ const updateAvailability = async (req: Request, res: Response) => {
 	}
 };
 
-// DELETE /api/tutor/availability/:id
 const deleteAvailability = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id as string;

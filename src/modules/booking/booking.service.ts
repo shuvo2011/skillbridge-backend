@@ -1,6 +1,5 @@
 import { prisma } from "../../lib/prisma";
 
-// Student এর studentId বের করো
 const getStudentProfile = async (userId: string) => {
 	const student = await prisma.student.findUnique({
 		where: { userId },
@@ -11,7 +10,6 @@ const getStudentProfile = async (userId: string) => {
 	return student;
 };
 
-// Tutor এর tutorId বের করো
 const getTutorProfile = async (userId: string) => {
 	const tutor = await prisma.tutorProfiles.findUnique({
 		where: { userId },
@@ -22,8 +20,6 @@ const getTutorProfile = async (userId: string) => {
 	return tutor;
 };
 
-// CREATE booking
-// service এ categoryId add করো
 const createBooking = async (userId: string, availabilityId: string, sessionDate: string, categoryId: string) => {
 	const student = await getStudentProfile(userId);
 
@@ -36,7 +32,6 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 
 	if (!availability) throw new Error("Availability slot not found");
 
-	// category exists check
 	const category = await prisma.category.findUnique({
 		where: { id: categoryId },
 	});
@@ -75,7 +70,7 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 			studentId: student.id,
 			tutorId: availability.tutorId,
 			availabilityId,
-			categoryId, // ← add করো
+			categoryId,
 			price: availability.tutor.price ?? null,
 			sessionDate: new Date(sessionDate),
 			slotFrom: availability.availableFrom,
@@ -91,7 +86,6 @@ const createBooking = async (userId: string, availabilityId: string, sessionDate
 	});
 };
 
-
 const getBookedSlots = async (tutorId: string, date: string) => {
 	const bookings = await prisma.booking.findMany({
 		where: {
@@ -104,25 +98,24 @@ const getBookedSlots = async (tutorId: string, date: string) => {
 	return bookings;
 };
 
-// GET my bookings (student বা tutor উভয়ের জন্য)
 const getMyBookings = async (userId: string, role: string) => {
 	if (role === "STUDENT") {
 		const student = await getStudentProfile(userId);
 		return await prisma.booking.findMany({
 			where: { studentId: student.id },
 			include: {
-				tutor: { include: { user: { select: { name: true, email: true, image:true } } } },
+				tutor: { include: { user: { select: { name: true, email: true, image: true } } } },
 				availability: true,
 				category: { select: { id: true, name: true } },
 			},
-			orderBy: {createdAt:"desc" },
+			orderBy: { createdAt: "desc" },
 		});
 	} else {
 		const tutor = await getTutorProfile(userId);
 		return await prisma.booking.findMany({
 			where: { tutorId: tutor.id },
 			include: {
-				student: { include: { user: { select: { name: true, email: true , image: true} } } },
+				student: { include: { user: { select: { name: true, email: true, image: true } } } },
 				availability: true,
 				category: { select: { id: true, name: true } },
 			},
@@ -131,7 +124,6 @@ const getMyBookings = async (userId: string, role: string) => {
 	}
 };
 
-// GET booking by id
 const getBookingById = async (userId: string, role: string, id: string) => {
 	const booking = await prisma.booking.findUnique({
 		where: { id },
@@ -144,7 +136,6 @@ const getBookingById = async (userId: string, role: string, id: string) => {
 
 	if (!booking) throw new Error("Booking not found");
 
-	// শুধু নিজের booking দেখতে পারবে
 	if (role === "STUDENT") {
 		const student = await getStudentProfile(userId);
 		if (booking.studentId !== student.id) throw new Error("Unauthorized");
@@ -156,7 +147,6 @@ const getBookingById = async (userId: string, role: string, id: string) => {
 	return booking;
 };
 
-// CANCEL booking (student করবে)
 const cancelBooking = async (userId: string, id: string) => {
 	const student = await getStudentProfile(userId);
 
@@ -174,7 +164,6 @@ const cancelBooking = async (userId: string, id: string) => {
 	});
 };
 
-// COMPLETE booking (tutor করবে)
 const completeBooking = async (userId: string, id: string) => {
 	const tutor = await getTutorProfile(userId);
 
@@ -199,7 +188,7 @@ const getReviewableBookings = async (userId: string, tutorId: string) => {
 			studentId: student.id,
 			tutorId,
 			status: "COMPLETED",
-			review: null,  // review নেই এমন
+			review: null,
 		},
 		select: {
 			id: true,

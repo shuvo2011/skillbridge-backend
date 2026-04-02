@@ -13,7 +13,6 @@ const getTutorProfile = async (userId: string) => {
 	return tutorProfile;
 };
 
-// GET all categories of logged in tutor
 const getMyCategories = async (userId: string) => {
 	const tutorProfile = await getTutorProfile(userId);
 
@@ -31,11 +30,9 @@ const getMyCategories = async (userId: string) => {
 	});
 };
 
-// ADD category
 const addCategory = async (userId: string, categoryId: string) => {
 	const tutorProfile = await getTutorProfile(userId);
 
-	// Category exists check
 	const category = await prisma.category.findUnique({
 		where: { id: categoryId },
 	});
@@ -44,7 +41,6 @@ const addCategory = async (userId: string, categoryId: string) => {
 		throw new Error("Category not found");
 	}
 
-	// Already added check
 	const existing = await prisma.tutorCategory.findFirst({
 		where: { tutorId: tutorProfile.id, categoryId },
 	});
@@ -70,7 +66,6 @@ const addCategory = async (userId: string, categoryId: string) => {
 	});
 };
 
-// REMOVE category
 const removeCategory = async (userId: string, id: string) => {
 	const tutorProfile = await getTutorProfile(userId);
 

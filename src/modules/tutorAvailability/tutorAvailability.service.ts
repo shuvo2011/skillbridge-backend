@@ -1,26 +1,6 @@
 import { DayOfWeek } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
-import {buildPaginationMeta} from "../../helpers/paginationHelper";
-
-// ─────────────────────────────────────────────
-// HELPERS
-// "HH:MM" → DateTime  (Prisma @db.Time needs a full Date object)
-// ─────────────────────────────────────────────
-// const toTimeDate = (timeStr: string): Date => {
-// 	const parts = timeStr.split(":");
-// 	const hours = parseInt(parts[0] ?? "0", 10);
-// 	const minutes = parseInt(parts[1] ?? "0", 10);
-// 	const date = new Date("1970-01-01T00:00:00.000Z");
-// 	date.setUTCHours(hours, minutes, 0, 0);
-// 	return date;
-// };
-
-// // DateTime → "HH:MM"  (so client gets clean time string, not full Date)
-// const toTimeStr = (date: Date): string => date.toISOString().slice(11, 16);
-
-// GET ALL availability for a tutor
-// tutorAvailability.service.ts
-// tutorAvailability.service.ts
+import { buildPaginationMeta } from "../../helpers/paginationHelper";
 
 const getAllAvailability = async (payload: {
 	tutorId: string;
@@ -49,8 +29,8 @@ const getAllAvailability = async (payload: {
 		tutorId: tutorProfile.id,
 		...(s
 			? {
-				dayOfWeek: { equals: s as any },
-			}
+					dayOfWeek: { equals: s as any },
+				}
 			: {}),
 	};
 
@@ -78,7 +58,6 @@ const getAllAvailability = async (payload: {
 	}
 };
 
-// GET single availability slot by id
 const getAvailabilityById = async (userId: string, id: string) => {
 	const tutorProfile = await prisma.tutorProfiles.findUnique({
 		where: { userId },
@@ -100,7 +79,6 @@ const getAvailabilityById = async (userId: string, id: string) => {
 	return availability;
 };
 
-// CREATE a new availability slot
 const createAvailability = async (userId: string, dayOfWeek: DayOfWeek, availableFrom: string, availableTo: string) => {
 	const tutorProfile = await prisma.tutorProfiles.findUnique({
 		where: { userId },
@@ -111,7 +89,6 @@ const createAvailability = async (userId: string, dayOfWeek: DayOfWeek, availabl
 		throw new Error("Tutor profile not found");
 	}
 
-	// Exact duplicate check
 	const exactDuplicate = await prisma.tutorAvailability.findFirst({
 		where: {
 			tutorId: tutorProfile.id,
@@ -125,7 +102,6 @@ const createAvailability = async (userId: string, dayOfWeek: DayOfWeek, availabl
 		throw new Error(`Slot ${availableFrom}-${availableTo} on ${dayOfWeek} already exists`);
 	}
 
-	// Overlap check
 	const overlapping = await prisma.tutorAvailability.findFirst({
 		where: {
 			tutorId: tutorProfile.id,
@@ -150,7 +126,6 @@ const createAvailability = async (userId: string, dayOfWeek: DayOfWeek, availabl
 	});
 };
 
-// UPDATE an existing availability slot
 const updateAvailability = async (
 	userId: string,
 	id: string,
@@ -160,7 +135,6 @@ const updateAvailability = async (
 		availableTo?: string;
 	},
 ) => {
-	// userId দিয়ে tutor_profiles এর id বের করো
 	const tutorProfile = await prisma.tutorProfiles.findUnique({
 		where: { userId },
 		select: { id: true },
@@ -182,7 +156,6 @@ const updateAvailability = async (
 	const availableFrom = payload.availableFrom ?? existing.availableFrom;
 	const availableTo = payload.availableTo ?? existing.availableTo;
 
-	// Exact duplicate check
 	const exactDuplicate = await prisma.tutorAvailability.findFirst({
 		where: {
 			tutorId: tutorProfile.id,
@@ -197,7 +170,6 @@ const updateAvailability = async (
 		throw new Error(`Slot ${availableFrom}-${availableTo} on ${dayOfWeek} already exists`);
 	}
 
-	// Overlap check
 	const overlapping = await prisma.tutorAvailability.findFirst({
 		where: {
 			tutorId: tutorProfile.id,
@@ -223,7 +195,6 @@ const updateAvailability = async (
 	});
 };
 
-// DELETE an availability slot
 const deleteAvailability = async (userId: string, id: string) => {
 	const tutorProfile = await prisma.tutorProfiles.findUnique({
 		where: { userId },

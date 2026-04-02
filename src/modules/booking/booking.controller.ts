@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import { bookingService } from "./booking.service";
 
-// controller এ categoryId add করো
 const createBooking = async (req: Request, res: Response) => {
 	try {
 		const userId = req.user?.id as string;
-		const { availabilityId, sessionDate, categoryId } = req.body; // ← add
+		const { availabilityId, sessionDate, categoryId } = req.body;
 
-		if (!availabilityId || !sessionDate || !categoryId) { // ← add
+		if (!availabilityId || !sessionDate || !categoryId) {
 			res.status(400).json({
 				success: false,
 				message: "availabilityId, sessionDate and categoryId are required",
@@ -134,7 +133,6 @@ const completeBooking = async (req: Request, res: Response) => {
 		res.status(status).json({ success: false, message: error.message });
 	}
 };
-
 
 const getReviewableBookings = async (req: Request, res: Response) => {
 	try {
