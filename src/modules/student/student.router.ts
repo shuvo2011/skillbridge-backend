@@ -5,7 +5,7 @@ import { checkUserStatus } from "../../middleware/checkUserStatus";
 
 const router = express.Router();
 
-
+router.get("/stats", authenticate(UserRole.STUDENT), checkUserStatus, studentController.getMyStats);
 // ✅ /profile আগে
 router.get("/profile", authenticate(UserRole.STUDENT), checkUserStatus, studentController.getMyProfile);
 router.put("/profile", authenticate(UserRole.STUDENT), checkUserStatus, studentController.updateMyProfile);

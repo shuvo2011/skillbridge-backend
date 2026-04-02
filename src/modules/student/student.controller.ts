@@ -90,7 +90,15 @@ const deleteStudent = async (req: Request, res: Response) => {
 		});
 	}
 };
-
+const getMyStats = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id;
+		const stats = await studentService.getMyStats(userId as string);
+		res.status(200).json({ success: true, data: stats });
+	} catch (error: any) {
+		res.status(error.statusCode || 500).json({ message: error.message });
+	}
+};
 export const studentController = {
 	getMyProfile,
 	updateMyProfile,
@@ -98,4 +106,5 @@ export const studentController = {
 	getStudentById,
 	updateStudent,
 	deleteStudent,
+	getMyStats,
 };

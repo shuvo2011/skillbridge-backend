@@ -137,7 +137,31 @@ const deleteStudent = async (id: string) => {
 
 	return deletedStudent;
 };
+const getMyStats = async (userId: string) => {
+	const student = await prisma.student.findFirst({
+		where: { userId },
+	});
 
+	if (!student) throw new Error("Student not found");
+
+	const bookings = await prisma.booking.findMany({
+		where: { studentId: student.id },
+	});
+
+	const totalBookings = bookings.length;
+	const confirmedBookings = bookings.filter((b) => b.status === "CONFIRMED").length;
+	const completedBookings = bookings.filter((b) => b.status === "COMPLETED").length;
+	const cancelledBookings = bookings.filter((b) => b.status === "CANCELLED").length;
+	const uniqueTutors = new Set(bookings.map((b) => b.tutorId)).size;
+
+	return {
+		totalBookings,
+		confirmedBookings,
+		completedBookings,
+		cancelledBookings,
+		uniqueTutors,
+	};
+};
 export const studentService = {
 	getMyProfile,
 	updateMyProfile,
@@ -145,4 +169,5 @@ export const studentService = {
 	getStudentById,
 	updateStudent,
 	deleteStudent,
+	getMyStats,
 };
