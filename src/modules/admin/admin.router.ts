@@ -11,4 +11,6 @@ router.patch("/users/:id", authenticate(UserRole.ADMIN), adminController.updateU
 // modules/admin/admin.router.ts এ add করো
 router.get("/bookings", authenticate(UserRole.ADMIN), adminController.getAllBookings);
 
+router.get("/stats", authenticate(UserRole.ADMIN), adminController.getStats);
+router.get("/booking-trends", authenticate(UserRole.ADMIN), adminController.getBookingTrends);
 export const adminRouter: Router = router;

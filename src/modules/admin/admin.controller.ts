@@ -37,5 +37,21 @@ const getAllBookings = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-
-export const adminController = { getAllUsers, updateUserStatus,getAllBookings };
+// admin.controller.ts এ add করো
+const getStats = async (req: Request, res: Response) => {
+    try {
+        const data = await adminService.getStats();
+        res.status(200).json({ success: true, data });
+    } catch (error: any) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+const getBookingTrends = async (req: Request, res: Response) => {
+    try {
+        const data = await adminService.getBookingTrends();
+        res.status(200).json({ success: true, data });
+    } catch (error: any) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+export const adminController = { getAllUsers, updateUserStatus, getAllBookings, getStats,getBookingTrends };

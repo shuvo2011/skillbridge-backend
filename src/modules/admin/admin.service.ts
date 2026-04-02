@@ -87,4 +87,74 @@ const getAllBookings = async (params: { search?: string | undefined; status?: st
     });
 };
 
-export const adminService = { getAllUsers, updateUserStatus, getAllBookings };
+
+const getStats = async () => {
+    const [
+        totalStudents,
+        totalTutors,
+        totalBookings,
+        confirmedBookings,
+        completedBookings,
+        cancelledBookings,
+        totalCategories,
+        revenueData,
+    ] = await prisma.$transaction([
+        prisma.student.count(),
+        prisma.tutorProfiles.count(),
+        prisma.booking.count(),
+        prisma.booking.count({ where: { status: "CONFIRMED" } }),
+        prisma.booking.count({ where: { status: "COMPLETED" } }),
+        prisma.booking.count({ where: { status: "CANCELLED" } }),
+        prisma.category.count(),
+        prisma.booking.findMany({
+            where: { status: "COMPLETED" },
+            select: { price: true },
+        }),
+    ]);
+
+    const totalRevenue = revenueData.reduce((sum, b) => sum + parseFloat(b.price?.toString() ?? "0"), 0);
+
+    return {
+        totalStudents,
+        totalTutors,
+        totalUsers: totalStudents + totalTutors,
+        totalBookings,
+        confirmedBookings,
+        completedBookings,
+        cancelledBookings,
+        totalCategories,
+        totalRevenue,
+    };
+};
+
+// admin.service.ts এ getStats এ add করো
+const getBookingTrends = async () => {
+    const bookings = await prisma.booking.findMany({
+        select: {
+            createdAt: true,
+            status: true,
+        },
+        orderBy: { createdAt: "asc" },
+    });
+
+    const months: Record<string, { confirmed: number; completed: number; cancelled: number }> = {};
+
+    const now = new Date();
+    for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = d.toLocaleString("en-US", { month: "short", year: "numeric" });
+        months[key] = { confirmed: 0, completed: 0, cancelled: 0 };
+    }
+
+    bookings.forEach((b) => {
+        const key = new Date(b.createdAt).toLocaleString("en-US", { month: "short", year: "numeric" });
+        if (months[key]) {
+            if (b.status === "CONFIRMED") months[key].confirmed++;
+            else if (b.status === "COMPLETED") months[key].completed++;
+            else if (b.status === "CANCELLED") months[key].cancelled++;
+        }
+    });
+
+    return Object.entries(months).map(([month, data]) => ({ month, ...data }));
+};
+export const adminService = { getAllUsers, updateUserStatus, getAllBookings,getStats,getBookingTrends };
