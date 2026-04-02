@@ -17,11 +17,12 @@ export const auth = betterAuth({
 	baseURL: process.env.BETTER_AUTH_URL || "http://localhost:5050",
 	advanced: {
 		crossSubdomainCookies: {
-			enabled: true,
+			enabled: false,
 		},
 		defaultCookieAttributes: {
-			sameSite: "none",
+			sameSite: "lax",
 			secure: true,
+			httpOnly: true,
 		},
 	},
 	database: prismaAdapter(prisma, {
