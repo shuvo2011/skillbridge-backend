@@ -18,7 +18,6 @@ const getAllAvailability = async (req: Request, res: Response) => {
 		const result = await tutorAvailabilityService.getAllAvailability(payload);
 		res.status(200).json(result);
 	} catch (error) {
-		console.error("Error retrieving availability:", error);
 		res.status(500).json({ message: "Something went wrong", error });
 	}
 };

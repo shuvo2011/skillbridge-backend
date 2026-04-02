@@ -27,7 +27,6 @@ const getAllCategories = async (req: Request, res: Response) => {
 
 		res.status(200).json(result);
 	} catch (error) {
-		console.error("Error retrieving categories:", error);
 		res.status(500).json({ message: "Something went wrong", error: error });
 	}
 };
@@ -54,8 +53,6 @@ const getCategoryById = async (req: Request, res: Response) => {
 };
 const createCategory = async (req: Request, res: Response) => {
 	try {
-		console.log("Request body:", req.body);
-
 		const { name, status } = req.body;
 
 		if (!name) {
@@ -67,7 +64,6 @@ const createCategory = async (req: Request, res: Response) => {
 		const result = await categoryService.createCategory({ name, status });
 		res.status(201).json(result);
 	} catch (error: any) {
-		console.log("Error:", error.message);
 		res.status(error.statusCode || 500).json({
 			error: error.message || "Category creation failed",
 		});

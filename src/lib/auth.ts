@@ -155,7 +155,6 @@ If you didn't create a Skill Bridge account, you can safely ignore this email.
   `,
 				});
 			} catch (err) {
-				console.log(err);
 				throw err;
 			}
 		},

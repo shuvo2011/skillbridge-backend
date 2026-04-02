@@ -53,7 +53,6 @@ const getAllAvailability = async (payload: {
 			data,
 		};
 	} catch (error) {
-		console.error("Error retrieving availability:", error);
 		throw error;
 	}
 };

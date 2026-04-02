@@ -30,10 +30,6 @@ export const authenticate = (...roles: UserRole[]) => {
 				headers: req.headers as any,
 			});
 
-			console.log("Session:", session);
-			console.log("User role:", session?.user?.role);
-			console.log("Required roles:", roles);
-
 			if (!session) {
 				return res.status(401).json({
 					success: false,

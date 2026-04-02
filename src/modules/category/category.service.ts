@@ -44,7 +44,6 @@ const getAllCategories = async (payload: {
 			data,
 		};
 	} catch (error) {
-		console.error("Error retrieving categories:", error);
 		throw error;
 	}
 };
@@ -57,7 +56,6 @@ const getCategoryById = async (id: string) => {
 
 		return category;
 	} catch (error) {
-		console.error("Error retrieving category by ID:", error);
 		throw error;
 	}
 };
@@ -79,7 +77,6 @@ const createCategory = async (payload: CreateCategoryPayload) => {
 			},
 		});
 	} catch (error) {
-		console.error("Error creating category:", error);
 		throw error;
 	}
 };
@@ -102,7 +99,6 @@ const updateCategory = async (id: string, payload: CreateCategoryPayload) => {
 			},
 		});
 	} catch (error) {
-		console.error("Error updating category:", error);
 		throw error;
 	}
 };
@@ -121,7 +117,6 @@ const deleteCategory = async (id: string) => {
 			where: { id },
 		});
 	} catch (error) {
-		console.error("Error deleting category:", error);
 		throw error;
 	}
 };

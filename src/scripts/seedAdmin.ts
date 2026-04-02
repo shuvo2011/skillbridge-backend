@@ -18,8 +18,6 @@ const ADMIN = {
 
 const seedAdmin = async () => {
 	try {
-		console.log("🚀 Seeding admin...");
-
 		let user = await prisma.user.findUnique({
 			where: { email: ADMIN.email },
 			select: { id: true, role: true },
@@ -41,7 +39,6 @@ const seedAdmin = async () => {
 			});
 
 			const data = await res.json().catch(() => ({}));
-			console.log("📦 Signup response:", data);
 
 			if (!res.ok) {
 				throw new Error(data?.error || data?.message || "Signup failed");
@@ -72,8 +69,6 @@ const seedAdmin = async () => {
 
 		await prisma.student.deleteMany({ where: { userId: updated.id } });
 		await prisma.tutorProfiles.deleteMany({ where: { userId: updated.id } });
-
-		console.log("✅ Admin seeded successfully:", updated);
 	} catch (error: any) {
 		console.error("❌ Admin seeding failed:", error.message || error);
 	} finally {
