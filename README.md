@@ -214,14 +214,19 @@ src/
 
 ---
 
+## Links
+
+| | URL |
+|--|-----|
+| **Frontend Repo** | https://github.com/shuvo2011/skillbridge-frontend |
+| **Backend Repo** | https://github.com/shuvo2011/skillbridge-backend |
+| **Frontend Live** | https://skillbridge.vercel.app |
+| **Backend Live** | https://skillbridge-api.vercel.app |
+| **Demo Video** | https://drive.google.com/file/d/xxx/view |
+
 ## Admin Credentials
 
 ```
-Frontend Repo    : https://github.com/shuvo2011/skillbridge-frontend
-Backend Repo     : https://github.com/shuvo2011/skillbridge-backend
-Frontend Live    : https://skillbridge.vercel.app
-Backend Live     : https://skillbridge-api.vercel.app
-Demo Video       : https://drive.google.com/file/d/xxx/view
 Email    : rahim@skillbridge.com
 Password : Pa$$w0rd!
 ```
