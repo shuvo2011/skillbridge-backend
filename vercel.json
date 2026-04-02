@@ -1,15 +1,16 @@
 {
   "version": 2,
+  "buildCommand": "pnpm install && npx prisma generate && npx tsc",
   "builds": [
     {
-      "src": "src/app.ts",
+      "src": "dist/app.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/app.ts"
+      "dest": "dist/app.js"
     }
   ]
 }
