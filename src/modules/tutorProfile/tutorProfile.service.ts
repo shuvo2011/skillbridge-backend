@@ -146,10 +146,57 @@ const deleteTutor = async (id: string) => {
 	return deletedTutor;
 };
 
+
+const getMyStats = async (userId: string) => {
+	const tutorProfile = await prisma.tutorProfiles.findUnique({
+		where: { userId },
+		select: { id: true },
+	});
+
+	if (!tutorProfile) throw new Error("Tutor profile not found");
+
+	const [
+		totalSessions,
+		confirmedSessions,
+		completedSessions,
+		cancelledSessions,
+		revenueData,
+		totalStudents,
+	] = await prisma.$transaction([
+		prisma.booking.count({ where: { tutorId: tutorProfile.id } }),
+		prisma.booking.count({ where: { tutorId: tutorProfile.id, status: "CONFIRMED" } }),
+		prisma.booking.count({ where: { tutorId: tutorProfile.id, status: "COMPLETED" } }),
+		prisma.booking.count({ where: { tutorId: tutorProfile.id, status: "CANCELLED" } }),
+		prisma.booking.findMany({
+			where: { tutorId: tutorProfile.id, status: "COMPLETED" },
+			select: { price: true },
+		}),
+		prisma.booking.findMany({
+			where: { tutorId: tutorProfile.id },
+			select: { studentId: true },
+			distinct: ["studentId"],
+		}),
+	]);
+
+	const totalRevenue = revenueData.reduce(
+		(sum, b) => sum + parseFloat(b.price?.toString() ?? "0"), 0
+	);
+
+	return {
+		totalSessions,
+		confirmedSessions,
+		completedSessions,
+		cancelledSessions,
+		totalRevenue,
+		totalStudents: totalStudents.length,
+	};
+};
+
 export const tutorService = {
 	getAllTutors,
 	getMyProfile,
 	getTutorById,
 	updateTutorProfile,
 	deleteTutor,
+	getMyStats,
 };

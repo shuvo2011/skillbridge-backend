@@ -85,11 +85,20 @@ const deleteTutor = async (req: Request, res: Response) => {
 		});
 	}
 };
-
+const getMyStats = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id as string;
+		const data = await tutorService.getMyStats(userId);
+		res.status(200).json({ success: true, data });
+	} catch (error: any) {
+		res.status(500).json({ success: false, message: error.message });
+	}
+};
 export const tutorController = {
 	getAllTutors,
 	getMyProfile,
 	getTutorById,
 	updateTutorProfile,
 	deleteTutor,
+	getMyStats,
 };

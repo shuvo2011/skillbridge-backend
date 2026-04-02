@@ -6,7 +6,7 @@ import { checkUserStatus } from "../../middleware/checkUserStatus";
 const router = express.Router();
 
 
-
+router.get("/stats", authenticate(UserRole.TUTOR), checkUserStatus, tutorController.getMyStats);
 // Protected routes
 router.get("/profile", authenticate(UserRole.TUTOR), checkUserStatus, tutorController.getMyProfile);
 router.put("/profile", authenticate(UserRole.TUTOR), checkUserStatus, tutorController.updateTutorProfile);
