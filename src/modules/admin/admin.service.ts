@@ -3,7 +3,7 @@ import { prisma } from "../../lib/prisma";
 
 const getAllUsers = async (params: { search?: string | undefined; role?: string | undefined }) => {
     const where: any = {
-        role: { not: "ADMIN" }, // ← admin বাদ
+        role: { not: "ADMIN" },
         ...(params.search
             ? {
                 OR: [
@@ -27,6 +27,12 @@ const getAllUsers = async (params: { search?: string | undefined; role?: string 
             emailVerified: true,
             createdAt: true,
             image: true,
+            tutorProfile: {          // ← নতুন
+                select: {
+                    id: true,
+                    isFeatured: true,
+                },
+            },
         },
         orderBy: { createdAt: "desc" },
     });

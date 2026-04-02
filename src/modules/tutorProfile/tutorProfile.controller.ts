@@ -94,6 +94,17 @@ const getMyStats = async (req: Request, res: Response) => {
 		res.status(500).json({ success: false, message: error.message });
 	}
 };
+
+const toggleFeatured = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params; // tutor profile id
+		const result = await tutorService.toggleFeatured(id as string);
+		res.status(200).json({ success: true, data: result });
+	} catch (error: any) {
+		res.status(error.statusCode || 500).json({ message: error.message });
+	}
+};
+
 export const tutorController = {
 	getAllTutors,
 	getMyProfile,
@@ -101,4 +112,5 @@ export const tutorController = {
 	updateTutorProfile,
 	deleteTutor,
 	getMyStats,
+	toggleFeatured,
 };

@@ -16,5 +16,5 @@ router.delete("/:id", authenticate(UserRole.ADMIN), tutorController.deleteTutor)
 router.get("/", tutorController.getAllTutors);
 router.get("/:id", tutorController.getTutorById);
 
-
+router.patch("/:id/featured", authenticate(UserRole.ADMIN), tutorController.toggleFeatured);
 export const tutorProfileRouter: Router = router;

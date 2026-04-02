@@ -15,6 +15,7 @@ type UpdateTutorPayload = {
 // GET all tutors
 const getAllTutors = async () => {
 	return await prisma.tutorProfiles.findMany({
+		orderBy: { isFeatured: "desc" },
 		include: {
 			user: {
 				select: {
@@ -191,6 +192,18 @@ const getMyStats = async (userId: string) => {
 		totalStudents: totalStudents.length,
 	};
 };
+const toggleFeatured = async (id: string) => {
+	const profile = await prisma.tutorProfiles.findUnique({
+		where: { id },
+	});
+
+	if (!profile) throw new Error("Tutor profile not found");
+
+	return await prisma.tutorProfiles.update({
+		where: { id },
+		data: { isFeatured: !profile.isFeatured },
+	});
+};
 
 export const tutorService = {
 	getAllTutors,
@@ -199,4 +212,5 @@ export const tutorService = {
 	updateTutorProfile,
 	deleteTutor,
 	getMyStats,
+	toggleFeatured,
 };
