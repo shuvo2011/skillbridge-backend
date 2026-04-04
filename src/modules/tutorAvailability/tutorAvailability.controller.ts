@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { tutorAvailabilityService } from "./tutorAvailability.service";
-import { DayOfWeek } from "../../../generated/prisma/enums";
 import { paginationHelper } from "../../helpers/paginationHelper";
+import { DayOfWeek } from "../../generated/enums";
 
 const VALID_DAYS = Object.values(DayOfWeek);
 const isValidTime = (t: string): boolean => /^([01]\d|2[0-3]):([0-5]\d)$/.test(t);

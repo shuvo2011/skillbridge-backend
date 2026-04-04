@@ -1,6 +1,6 @@
-import { DayOfWeek } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { buildPaginationMeta } from "../../helpers/paginationHelper";
+import { DayOfWeek } from "../../generated/enums";
 
 const getAllAvailability = async (payload: {
 	tutorId: string;

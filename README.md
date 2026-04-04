@@ -63,7 +63,7 @@ APP_MAILER_PASS=your_mailtrap_pass
 ADMIN_SEED_SECRET=your_seed_secret
 
 # Frontend URL
-APP_URL=http://localhost:3000
+FRONTEND_URL=http://localhost:3000
 ```
 
 ### Database Setup
@@ -220,8 +220,8 @@ src/
 |--|-----|
 | **Frontend Repo** | https://github.com/shuvo2011/skillbridge-frontend |
 | **Backend Repo** | https://github.com/shuvo2011/skillbridge-backend |
-| **Frontend Live** | https://skillbridge.vercel.app |
-| **Backend Live** | https://skillbridge-api.vercel.app |
+| **Frontend Live** | https://skillbridge-frontend-beta.vercel.app |
+| **Backend Live** | https://skillbridge-backend-alpha.vercel.app |
 | **Demo Video** | https://drive.google.com/file/d/xxx/view |
 
 ## Admin Credentials

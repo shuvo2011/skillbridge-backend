@@ -1,6 +1,7 @@
-import { CategoryStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { buildPaginationMeta } from "../../helpers/paginationHelper";
+import { CategoryStatus } from "../../generated/enums";
+
 type CreateCategoryPayload = {
 	name: string;
 	status?: CategoryStatus;

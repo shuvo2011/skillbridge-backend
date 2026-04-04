@@ -2,6 +2,7 @@
 node_modules
 dist
 /generated/prisma
-
+/src/generated
 # src/modules/student*
 
+.vercel

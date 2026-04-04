@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import { toNodeHandler } from "better-auth/node";
+import cookieParser from "cookie-parser";
 import { auth } from "./lib/auth";
 import cors from "cors";
 import { categoryRouter } from "./modules/category/category.router";
@@ -14,14 +15,17 @@ import { adminRouter } from "./modules/admin/admin.router";
 
 const app: Application = express();
 
+app.use(cookieParser());
 app.use(
 	cors({
-		origin: process.env.APP_URL || "http://localhost:3000",
+		origin: process.env.FRONTEND_URL || "http://localhost:3000",
 		credentials: true,
 	}),
 );
-
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+// Enable URL-encoded form data parsing
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 app.use("/api/students", studentRouter);

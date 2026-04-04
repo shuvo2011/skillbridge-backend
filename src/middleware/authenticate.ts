@@ -1,7 +1,5 @@
-import express, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { auth } from "../lib/auth";
-
-const router = express.Router();
 
 export enum UserRole {
 	STUDENT = "STUDENT",
@@ -26,10 +24,11 @@ declare global {
 export const authenticate = (...roles: UserRole[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
+			console.log("Cookie header:", req.headers.cookie);
 			const session = await auth.api.getSession({
 				headers: req.headers as any,
 			});
-
+			console.log("Session:", session ? "found" : "null");
 			if (!session) {
 				return res.status(401).json({
 					success: false,

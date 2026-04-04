@@ -2,7 +2,7 @@ import app from "./app";
 import { prisma } from "./lib/prisma";
 
 const PORT = process.env.PORT || 5050;
-async function main() {
+async function bootstrap() {
 	try {
 		await prisma.$connect();
 
@@ -15,4 +15,4 @@ async function main() {
 	}
 }
 
-main();
+bootstrap();

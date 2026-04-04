@@ -14,20 +14,11 @@ const transporter = nodemailer.createTransport({
 });
 
 export const auth = betterAuth({
-	baseURL: process.env.BETTER_AUTH_URL || "http://localhost:5050",
-	advanced: {
-		crossSubdomainCookies: {
-			enabled: true,
-		},
-		defaultCookieAttributes: {
-			sameSite: "none",
-			secure: true,
-		},
-	},
 	database: prismaAdapter(prisma, {
 		provider: "postgresql",
 	}),
-	trustedOrigins: [process.env.APP_URL || "http://localhost:3000"],
+	baseURL: process.env.BETTER_AUTH_URL,
+	trustedOrigins: [process.env.FRONTEND_URL!],
 	user: {
 		additionalFields: {
 			role: {
@@ -61,6 +52,7 @@ export const auth = betterAuth({
 		autoSignIn: false,
 		requireEmailVerification: true,
 	},
+
 	emailVerification: {
 		sendOnSignUp: true,
 		autoSignInAfterVerification: true,
@@ -204,6 +196,19 @@ If you didn't create a Skill Bridge account, you can safely ignore this email.
 							create: { userId: user.id },
 						});
 					}
+				},
+			},
+		},
+	},
+	advanced: {
+		cookies: {
+			session_token: {
+				name: "__Secure-session_token",
+				attributes: {
+					httpOnly: true,
+					secure: true,
+					sameSite: "none",
+					// partitioned: true,
 				},
 			},
 		},

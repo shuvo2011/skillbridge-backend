@@ -7,7 +7,13 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "npx tsx watch src/server.ts",
-		"seed:admin": "npx tsx src/scripts/seedAdmin.ts"
+		"seed:admin": "npx tsx src/scripts/seedAdmin.ts",
+		"build:tsup": "tsup",
+		"start": "node dist/server.js",
+		"lint": "eslint ./src/**/*",
+		"migrate": "prisma migrate dev",
+		"generate": "prisma generate",
+		"postinstall": "prisma generate"
 	},
 	"keywords": [],
 	"author": "",
@@ -15,12 +21,14 @@
 	"packageManager": "pnpm@10.15.0",
 	"devDependencies": {
 		"@types/bcrypt": "^6.0.0",
+		"@types/cookie-parser": "^1.4.10",
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.6",
 		"@types/node": "^25.3.2",
 		"@types/nodemailer": "^7.0.11",
 		"@types/pg": "^8.16.0",
 		"prisma": "^7.4.2",
+		"tsup": "^8.5.1",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"
 	},
@@ -29,6 +37,7 @@
 		"@prisma/client": "^7.4.2",
 		"bcrypt": "^6.0.0",
 		"better-auth": "^1.4.20",
+		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.6",
 		"dotenv": "^17.3.1",
 		"express": "^5.2.1",

@@ -1,6 +1,5 @@
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
-import bcrypt from "bcrypt";
 
 const updateUserInfo = async (userId: string, data: { name?: string; email?: string; image?: string }) => {
 	if (data.email) {
