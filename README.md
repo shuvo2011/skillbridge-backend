@@ -224,9 +224,22 @@ src/
 | **Backend Live** | https://skillbridge-backend-alpha.vercel.app |
 | **Demo Video** | https://drive.google.com/file/d/xxx/view |
 
-## Admin Credentials
+## Test Credentials
 
-```
-Email    : rahim@skillbridge.com
-Password : Pa$$w0rd!
-```
+### Admin
+| Field    | Value                    |
+|----------|--------------------------|
+| Email    | rahim@skillbridge.com    |
+| Password | Pa$$w0rd!                |
+
+### Tutor
+| Field    | Value                        |
+|----------|------------------------------|
+| Email    | omar.faruk@mailinator.com    |
+| Password | Pa$$w0rd!                    |
+
+### Student
+| Field    | Value                        |
+|----------|------------------------------|
+| Email    | xufyqebi@mailinator.com      |
+| Password | Pa$$w0rd!                    |
