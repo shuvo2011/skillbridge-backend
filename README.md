@@ -222,7 +222,7 @@ src/
 | **Backend Repo** | https://github.com/shuvo2011/skillbridge-backend |
 | **Frontend Live** | https://skillbridge-frontend-beta.vercel.app |
 | **Backend Live** | https://skillbridge-backend-alpha.vercel.app |
-| **Demo Video** | https://drive.google.com/file/d/xxx/view |
+| **Demo Video** | https://www.loom.com/share/ee51138f1bca4c54b0fce44a7cd09943 |
 
 ## Test Credentials
 
